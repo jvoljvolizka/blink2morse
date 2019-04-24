@@ -12,6 +12,7 @@ i = 0
 frameWidth = int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
 frameHeight = int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
 lockeyes = False
+morse = []
 #(width, height) = (1000, 1000)
 #screen = pygame.display.set_mode((width, height))
 #pygame.display.flip()
@@ -25,7 +26,7 @@ while True:
     faces = faceCascade.detectMultiScale(
         gray,
         scaleFactor=2.1,
-        minNeighbors=5,
+        #minNeighbors=5,
         minSize=(30, 30),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
@@ -39,6 +40,10 @@ while True:
             lockeyes = True
             cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
             print(eyes.shape[0])
+            if(lockeyes and eyes.shape[0] == 2):
+                morse.append(" ")
+            elif(lockeyes and eyes.shape[0] <= 1):
+                morse.append(".")
 
     if(lockeyes == True):
                 cv2.putText(img = frame, text = "i can see your dark soul from these eyes and it's delicious",org = (0,50), fontFace = cv2.FONT_HERSHEY_DUPLEX, fontScale = 1,color = (0, 0, 0))
@@ -52,6 +57,7 @@ while True:
         break
 
 # When everything is done, release the capture
+print(''.join(map(str, morse)))
 video_capture.release()
 cv2.destroyAllWindows()
 
